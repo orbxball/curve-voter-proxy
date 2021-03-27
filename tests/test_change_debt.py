@@ -9,4 +9,4 @@ def test_change_debt(gov, token, vault, strategy, whale, amount):
     strategy.harvest()
 
     vault.updateStrategyDebtRatio(strategy.address, 10_000, {"from": gov})
-    strategy.harvest()
+    strategy.tend()
