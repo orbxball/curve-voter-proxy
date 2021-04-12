@@ -147,19 +147,19 @@ abstract contract CurveVoterProxy is BaseStrategy {
     uint256 public keepCRV;
 
     constructor(address _vault) public BaseStrategy(_vault) {
-        minReportDelay = 12 hours;
-        maxReportDelay = 3 days;
+        minReportDelay = 6 hours;
+        maxReportDelay = 2 days;
         profitFactor = 1000;
         debtThreshold = 1e24;
         proxy = address(0x9a165622a744C20E3B2CB443AeD98110a33a231b);
     }
 
-    function setKeepCRV(uint256 _keepCRV) external onlyGovernance {
-        keepCRV = _keepCRV;
-    }
-
     function setProxy(address _proxy) external onlyGovernance {
         proxy = _proxy;
+    }
+
+    function setKeepCRV(uint256 _keepCRV) external onlyAuthorized {
+        keepCRV = _keepCRV;
     }
 
     function switchDex(bool isUniswap) external onlyAuthorized {
