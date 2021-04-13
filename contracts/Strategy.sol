@@ -204,7 +204,7 @@ abstract contract CurveVoterProxy is BaseStrategy {
         if (_balance < _amountNeeded) {
             _liquidatedAmount = _withdrawSome(_amountNeeded.sub(_balance));
             _liquidatedAmount = _liquidatedAmount.add(_balance);
-            // _loss = _amountNeeded.sub(_liquidatedAmount);
+            _loss = _amountNeeded.sub(_liquidatedAmount); // this should be 0. o/w there must be an error
         }
         else {
             _liquidatedAmount = _amountNeeded;
@@ -311,9 +311,11 @@ contract Strategy is CurveVoterProxy {
         if(_total < _debt) _loss = _debt - _total;
 
         // normally, keep this default
+        uint _losss;
         if (_debtOutstanding > 0) {
-            _debtPayment = _withdrawSome(_debtOutstanding);
+            (_debtPayment, _losss) = liquidatePosition(_debtOutstanding);
         }
+        _loss = _loss.add(_losss);
     }
 
     // NOTE: Can override `tendTrigger` and `harvestTrigger` if necessary
