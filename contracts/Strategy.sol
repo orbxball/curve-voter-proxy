@@ -214,6 +214,12 @@ abstract contract CurveVoterProxy is BaseStrategy {
     function prepareMigration(address _newStrategy) internal override {
         IVoterProxy(proxy).withdrawAll(gauge, address(want));
     }
+
+    function _adjustCRV(uint256 _crv) internal returns (uint256) {
+        uint256 _keepCRV = _crv.mul(keepCRV).div(DENOMINATOR);
+        IERC20(crv).safeTransfer(voter, _keepCRV);
+        return _crv.sub(_keepCRV);
+    }
 }
 
 
@@ -257,9 +263,7 @@ contract Strategy is CurveVoterProxy {
         IVoterProxy(proxy).harvest(gauge);
         uint256 _crv = IERC20(crv).balanceOf(address(this));
         if (_crv > 0) {
-            uint256 _keepCRV = _crv.mul(keepCRV).div(DENOMINATOR);
-            IERC20(crv).safeTransfer(voter, _keepCRV);
-            _crv = _crv.sub(_keepCRV);
+            _crv = _adjustCRV(_crv);
 
             IERC20(crv).safeApprove(dex, 0);
             IERC20(crv).safeApprove(dex, _crv);
