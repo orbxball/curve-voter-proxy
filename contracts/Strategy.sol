@@ -216,6 +216,13 @@ abstract contract CurveVoterProxy is BaseStrategy {
     }
 }
 
+
+/**
+ * @dev This is a mock strategy
+ *
+ * It shows the flow of how to implement customized functions
+ * after inheriting the CurveVoterProxy template
+ */
 contract Strategy is CurveVoterProxy {
     using SafeERC20 for IERC20;
     using Address for address;
@@ -223,10 +230,10 @@ contract Strategy is CurveVoterProxy {
 
     constructor(address _vault) public CurveVoterProxy(_vault) {
         dex = sushiswap; // by default use sushiswap
-        curve = address('[curve address]');
-        gauge = address('[gauge address]');
+        curve = address('[curve address]'); // curve address of want token
+        gauge = address('[gauge address]'); // gauge address of want token
         keepCRV = 1000; // by default is 10%
-        // put reward tokens here
+        // put reward tokens here, if not any, then ignore this
         // reward = address('[reward token address]')
     }
 
@@ -234,7 +241,9 @@ contract Strategy is CurveVoterProxy {
      * @dev Customize the selling logic for crv & reward tokens
      *
      * default tokens: weth, wbtc, dai
-     * flexiblt enough to construct multipath swap
+     * flexible enough to construct multipath swap
+     * so it is possible to make complicated selling path with aggregation
+     * or even use other dexes
     */
     function prepareReturn(uint256 _debtOutstanding)
         internal
@@ -264,6 +273,7 @@ contract Strategy is CurveVoterProxy {
         }
         // claim reward tokens
         // if more than one reward tokens, adding them all here
+        // if no reward token, then delete all `claimRewards` part
         IVoterProxy(proxy).claimRewards(gauge, reward);
         uint256 _reward = IERC20(reward).balanceOf(address(this));
         if (_reward > 0) {
@@ -277,13 +287,14 @@ contract Strategy is CurveVoterProxy {
 
             Uni(uniswap).swapExactTokensForTokens(_reward, uint256(0), path, address(this), now);
         }
-        // flexible enough to customize unique path
+        // flexible enough to customize unique multipath
         uint256 _usdc = IERC20(usdc).balanceOf(address(this));
         if (_usdc > 0) {
             IERC20(usdc).safeApprove(curve, 0);
             IERC20(usdc).safeApprove(curve, _usdc);
             ICurveFi(curve).exchange(1, 0, _usdc, 0);
         }
+        // put back the curve to get want token
         uint256 _target = IERC20(target).balanceOf(address(this));
         if (_target > 0) {
             IERC20(target).safeApprove(curve, 0);
