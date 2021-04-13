@@ -260,6 +260,7 @@ contract Strategy is CurveVoterProxy {
             uint256 _debtPayment
         )
     {
+        uint before = want.balanceOf(address(this));
         IVoterProxy(proxy).harvest(gauge);
         uint256 _crv = IERC20(crv).balanceOf(address(this));
         if (_crv > 0) {
@@ -305,8 +306,7 @@ contract Strategy is CurveVoterProxy {
             IERC20(target).safeApprove(curve, _target);
             ICurveFi(curve).add_liquidity([_target, 0, 0], 0);
         }
-
-        _profit = want.balanceOf(address(this));
+        _profit = want.balanceOf(address(this)).sub(before);
 
         // loss calculation
         // it only happens when curve.fi is hacked
