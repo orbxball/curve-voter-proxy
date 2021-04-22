@@ -120,6 +120,7 @@ interface IVoterProxy {
     function lock() external;
     function approveStrategy(address) external;
     function revokeStrategy(address) external;
+    function claimRewards(address _gauge, address _token) external;
 }
 
 
