@@ -220,8 +220,11 @@ abstract contract CurveVoterProxy is BaseStrategy {
 
     function _adjustCRV(uint256 _crv) internal returns (uint256) {
         uint256 _keepCRV = _crv.mul(keepCRV).div(DENOMINATOR);
-        IERC20(crv).safeTransfer(voter, _keepCRV);
-        return _crv.sub(_keepCRV);
+        if(_keepCRV > 0){
+            IERC20(crv).safeTransfer(voter, _keepCRV);
+            return _crv.sub(_keepCRV);
+        }
+        return _crv;
     }
 }
 
