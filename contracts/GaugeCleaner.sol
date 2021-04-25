@@ -74,22 +74,6 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint value);
 }
 
-interface IVoterProxy {
-    function withdraw(
-        address _gauge,
-        address _token,
-        uint256 _amount
-    ) external returns (uint256);
-    function balanceOf(address _gauge) external view returns (uint256);
-    function withdrawAll(address _gauge, address _token) external returns (uint256);
-    function deposit(address _gauge, address _token) external;
-    function harvest(address _gauge) external;
-    function lock() external;
-    function approveStrategy(address) external;
-    function revokeStrategy(address) external;
-    function proxy() external returns (address);
-}
-
 interface IVoter {
     function setGovernance(address _governance) external;
     function execute(address to, uint value, bytes calldata data) external returns (bool, bytes memory);
