@@ -316,7 +316,10 @@ contract Strategy is CurveVoterProxy {
         // it only happens when curve.fi is hacked
         uint _total = estimatedTotalAssets();
         uint _debt = vault.strategies(address(this)).totalDebt;
-        if(_total < _debt) _loss = _debt - _total;
+        if(_total < _debt) {
+            _loss = _debt - _total;
+            _profit = 0;
+        }
 
         // normally, keep this default
         uint _losss;
