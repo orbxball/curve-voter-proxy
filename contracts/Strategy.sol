@@ -224,6 +224,7 @@ abstract contract CurveVoterProxy is BaseStrategy {
     }
 
     function _withdrawSome(uint256 _amount) internal returns (uint256) {
+        _amount = Math.min(_amount, balanceOfPool());
         return IVoterProxy(proxy).withdraw(gauge, address(want), _amount);
     }
 
@@ -351,7 +352,7 @@ contract Strategy is CurveVoterProxy {
 
         // normally, keep this default
         if (_debtOutstanding > 0) {
-            _withdrawSome(Math.min(_debtOutstanding, balanceOfPool()));
+            _withdrawSome(_debtOutstanding);
             _debtPayment = Math.min(_debtOutstanding, balanceOfWant().sub(_profit));
         }
     }
