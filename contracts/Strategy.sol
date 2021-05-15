@@ -181,7 +181,7 @@ abstract contract CurveVoterProxy is BaseStrategy {
     constructor(address _vault) public BaseStrategy(_vault) {
         minReportDelay = 6 hours;
         maxReportDelay = 2 days;
-        profitFactor = 1000;
+        profitFactor = 1;
         debtThreshold = 1e24;
         proxy = address(0xA420A63BbEFfbda3B147d0585F1852C358e2C152);
     }
