@@ -67,7 +67,7 @@ def strategy(accounts, strategist, keeper, vault, Strategy, gov, token):
     vault.addStrategy(strategy, 10_000, 0, 2 ** 256 - 1, 1_000, {"from": gov})
 
     # proxy add
-    proxy = Contract("0x9a165622a744C20E3B2CB443AeD98110a33a231b", owner=gov)
+    proxy = Contract("0xA420A63BbEFfbda3B147d0585F1852C358e2C152", owner=gov)
     proxy.approveStrategy(strategy.gauge(), strategy)
 
     yield strategy

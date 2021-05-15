@@ -183,7 +183,7 @@ abstract contract CurveVoterProxy is BaseStrategy {
         maxReportDelay = 2 days;
         profitFactor = 1000;
         debtThreshold = 1e24;
-        proxy = address(0x9a165622a744C20E3B2CB443AeD98110a33a231b);
+        proxy = address(0xA420A63BbEFfbda3B147d0585F1852C358e2C152);
     }
 
     function setProxy(address _proxy) external onlyGovernance {
